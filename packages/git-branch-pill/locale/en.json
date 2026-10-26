@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "title": "Git Branch Pill",
+    "description": "Shows the current Git branch at the far left of the composer status row (the turns / cache-hit line)."
+  },
+  "pill": {
+    "title": "Current Git branch"
+  }
+}
