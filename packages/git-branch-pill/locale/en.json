@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Git Branch Pill",
-    "description": "Shows the current Git branch at the far left of the composer status row (the turns / cache-hit line)."
+    "title": "Git Branch Glance",
+    "description": "Shows the current branch at the far left of the composer status row; click for insertions, deletions and untracked files."
   },
   "pill": {
     "title": "Current Git branch"

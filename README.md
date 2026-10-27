@@ -15,7 +15,7 @@ dsh-plugins/
     hello-decoration/     # minimal "Hello DSH" sample, kept as a template
 ```
 
-## git-branch-pill
+## git-branch-pill（显示名：Git 分支速览 / Git Branch Glance）
 
 Adds a small pill to the left of the composer status row — the line that shows
 `13 轮 150 步`, `缓存命中 99%`, and the context meter.
