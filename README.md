@@ -12,11 +12,10 @@ in the app; the source also doubles as a reference for writing your own.
 |---|---|---|
 | 对话内搜索 / In-conversation Search | `@local/dsh-chat-search` | `Ctrl+F` search over the transcript: highlights, history, glass-styled bar, optional folded-process search |
 | Git 分支速览 / Git Branch Glance | `@local/dsh-git-branch-pill` | Branch and diff-stat pill in the composer status row |
-| Hello DSH | `@local/dsh-hello-decoration` | Minimal decoration kept as a template; not meant to be installed |
 
-The first two target the current DSH Web client. They rely on host slots and
-services (`conversation.composer.dock`, `plugins.row.config`,
-`ctx.configForms`), so a major DSH upgrade may need small adjustments.
+Both target the current DSH Web client. They rely on host slots and services
+(`conversation.composer.dock`, `plugins.row.config`, `ctx.configForms`), so a
+major DSH upgrade may need small adjustments.
 
 ## In-conversation Search (chat-search)
 
@@ -142,7 +141,7 @@ Hot updates while iterating:
 
 Deep dives: [`docs/plugins/chat-search.md`](docs/plugins/chat-search.md),
 [`docs/plugins/git-branch-pill.md`](docs/plugins/git-branch-pill.md). To start a
-new plugin, copy `packages/hello-decoration` and rename it.
+new plugin, copy one of the existing packages and rename it.
 
 ## License
 

@@ -10,9 +10,8 @@
 |---|---|---|
 | 对话内搜索 / In-conversation Search | `@local/dsh-chat-search` | `Ctrl+F` 在会话正文里搜索：高亮、历史、毛玻璃搜索条，可选折叠过程搜索 |
 | Git 分支速览 / Git Branch Glance | `@local/dsh-git-branch-pill` | 输入框状态行里的分支与改动统计 pill |
-| Hello DSH | `@local/dsh-hello-decoration` | 最小组件示例，留作模板，不建议安装 |
 
-前两个面向当前 DSH Web 客户端，依赖宿主提供的 slot 与服务（`conversation.composer.dock`、`plugins.row.config`、`ctx.configForms`），DSH 大版本升级后可能需要小幅适配。
+两个插件都面向当前 DSH Web 客户端，依赖宿主提供的 slot 与服务（`conversation.composer.dock`、`plugins.row.config`、`ctx.configForms`），DSH 大版本升级后可能需要小幅适配。
 
 ## 对话内搜索（chat-search）
 
@@ -116,7 +115,7 @@ AGENTS.md          本仓库的 agent 规则
 | `index.js` | 下一次 profile 重组时生效；往 `.dsh/profiles/<name>/cordis.patch.yml` 写一行内容或注释即可触发——只改 mtime 不会触发 Windows 的文件监听 |
 | 新增/移除包 | 同上：需要一次 profile 重组，光跑 `dsh plugin add` 不够 |
 
-深入阅读：[`docs/plugins/chat-search.md`](docs/plugins/chat-search.md)、[`docs/plugins/git-branch-pill.md`](docs/plugins/git-branch-pill.md)。要新写插件，复制 `packages/hello-decoration` 再改名。
+深入阅读：[`docs/plugins/chat-search.md`](docs/plugins/chat-search.md)、[`docs/plugins/git-branch-pill.md`](docs/plugins/git-branch-pill.md)。要新写插件，复制任一现有插件目录再改名。
 
 ## License
 
