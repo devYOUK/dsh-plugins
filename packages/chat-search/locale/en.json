@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "In-conversation Search",
+    "description": "Ctrl+F full-text search over the conversation body, with highlights and previous/next navigation."
+  }
+}

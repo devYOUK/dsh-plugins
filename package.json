@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "spec:check": "node scripts/spec-check.mjs",
+    "spec:index": "node scripts/spec-check.mjs --index",
+    "spec:new": "node scripts/spec-new.mjs"
   }
 }
