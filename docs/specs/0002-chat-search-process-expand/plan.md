@@ -7,15 +7,11 @@ updated: 2026-10-28
 
 ## 方案
 
-配置与表单：
-
-- Host `Config` 增加 `searchFoldedProcess: Schema.boolean().default(false).volatile()`；仍是 `chat-search` 命名空间，设置服务只服务 volatile 字段。
-- 客户端 `SettingsModel` 原先把每个字段包成 `numberSpec`；现在按 `kind` 分派到 `numberSpec` 或 `booleanSpec`（`format` 输出 `'true'`/`'false'`，`parse` 只接受这两个值）。配置页用 `role="switch"` + `aria-checked` 渲染，点击直接改草稿，保存仍是一次 `mutate`。
-- 「恢复默认」对布尔字段同样发 `unset`。
+没有独立配置：折叠行为直接并入搜索条的「过程」范围（`opts.includeProcess`，默认开）。
 
 搜索与定位：
 
-1. 收集阶段把每个流项分类为不可搜索 / 可见 / 折叠可展开（`classifyContainer`）。reasoning 与 tool-call 永远排除；折叠的过程正文只有在「过程」范围开启**且**配置开启时才收集，并给命中打上 `hidden: true`。
+1. 收集阶段把每个流项分类为不可搜索 / 可见 / 折叠可展开（`classifyContainer`）。reasoning 与 tool-call 永远排除；过程成员在「过程」开启时收集，折叠的行给命中打上 `hidden: true`。
 2. 导航统一走 `activate(start, list, delta)`：命中可见就直接测量滚动；`hidden` 命中先 `revealContainer(container)`。
 3. 展开复用宿主现成的机制：过程行隐藏时是 `hidden="until-found"`，宿主在元素上监听 `beforematch` 并把过程设为展开。插件对最近的 hidden 祖先派发 `beforematch`，然后在 600ms 上限内轮询“`hidden` 已移除且 `data-chat-motion` 已清空”，再多等一帧让布局稳定。
 4. 展开失败（元素断开、超时后仍隐藏）→ 该命中放进 `deadRef`，从计数中扣除并继续按方向找下一个；不会把用户留在看不见的位置。
@@ -26,9 +22,8 @@ updated: 2026-10-28
 
 ## 接口与数据
 
-- Config `chat-search`：新增 `searchFoldedProcess`（boolean，默认 false，volatile）。
-- 表单模型：字段描述从单一 `numberSpec` 泛化为 `kind: 'number' | 'boolean'`；`field()` 返回值仍是 `{ text, overridden, invalid }`。
-- 搜索条 `opts.includeProcess` 仍是范围开关；配置只决定折叠部分是否纳入，不改变可见部分的语义。
+- 不新增 Config 字段；`chat-search` 仍是三个数字字段，配置页不出现折叠开关。
+- 搜索条 `opts.includeProcess` 同时决定“是否搜索过程说明”和“是否搜索折叠过程并自动展开”。
 - 命中对象扩展为 `{ node, start, end, container, hidden }`；`container` 用于 `beforematch` 派发与展开等待。
 - DOM 契约：`hidden="until-found"`、`beforematch`、`data-chat-motion`、`data-chat-flow-kind`、`data-chat-group-part`、`data-turn-process-member`、`data-turn-process-answer`。
 
@@ -36,8 +31,6 @@ updated: 2026-10-28
 
 - 结构：`npm run check`、`npm run spec:check`。
 - 行为断言（纯逻辑，临时脚本）：
-  - `booleanSpec` 的 format/parse；
-  - 表单模型在布尔字段上的暂存、保存、恢复默认；
-  - 收集口径：过程范围关 / 开 × 折叠配置关 / 开 的组合，reasoning / tool-call / 隐藏答案的排除；
-  - 折叠过程正文被标记为 `hidden` 供展开。
-- 实机验证：折叠一个含关键词的过程分组，配置关闭时搜不到、开启时能搜到并自动展开定位；无浏览器控制时报告未验证。
+  - 收集口径：过程开 / 关，reasoning / tool-call / 隐藏答案的排除，折叠成员被标记为 `hidden`；
+  - 揭示：`beforematch` 只派发一次、隐藏祖先定向、已可见不派发、拒绝展开时按 600ms 超时失败、脱离文档立即失败。
+- 实机验证：折叠一个含关键词的过程分组，过程开启时能搜到并自动展开定位；无浏览器控制时报告未验证。

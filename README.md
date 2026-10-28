@@ -24,9 +24,10 @@ bar over the transcript.
 
 - Highlights every hit, `Enter` / `Shift+Enter` step forward and back.
 - Toggles: case-sensitive (`Aa`), whole word (`W`), regex (`.*`), and 过程
-  (include the narration a turn writes between tool steps).
-- Searches user turns, the final answer and visible process narration; thinking
-  (`reasoning`) and tool output never match.
+  (include the narration a turn writes between tool steps; folded process rows
+  are searched too and auto-expanded when matched).
+- Searches user turns, the final answer and process narration (visible or
+  folded); thinking (`reasoning`) and tool output never match.
 - Recent queries stay in `localStorage`.
 - The bar's look is configurable: 插件 → 对话内搜索 → 配置.
 
@@ -35,7 +36,6 @@ bar over the transcript.
 | `transparencyPercent` | 透明度（%） | 0 = solid background, 100 = fully see-through |
 | `blurPx` | 毛玻璃模糊（px） | radius of the bar's `backdrop-filter: blur()` |
 | `highlightPercent` | 命中高亮强度（%） | alpha of the hit rectangles |
-| `searchFoldedProcess` | 折叠过程正文 | include folded process rows and auto-expand them when navigating (default off) |
 
 ## Git Branch Glance (git-branch-pill)
 
@@ -84,7 +84,7 @@ are switched on in the Plugins page.
 - The Plugins page lists **对话内搜索** and **Git 分支速览** as installed and
   enabled.
 - `Ctrl+F` opens the search bar, typing highlights matches, and the 配置 page
-  shows four fields.
+  shows three fields.
 - The composer status row shows the branch pill; clicking it opens the popover.
 
 ## Uninstall

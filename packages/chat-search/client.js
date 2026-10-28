@@ -44,12 +44,6 @@ window.__ModuleLoader__.load({
       '.cs-cfg-input[aria-invalid="true"]{border-color:var(--dsw-alias-state-error-primary)}',
       '.cs-cfg-invalid{margin:0;font-size:12px;line-height:1.5;color:var(--dsw-alias-state-error-primary)}',
       '.cs-cfg-hint{margin:0;font-size:12px;line-height:1.5;color:var(--dsw-alias-label-tertiary)}',
-      '.cs-cfg-switch{position:relative;flex:none;width:34px;height:18px;padding:0;border:none;border-radius:999px;background:var(--dsw-alias-bg-layer-4);cursor:pointer;transition:background-color .12s ease-out}',
-      '.cs-cfg-switch[aria-checked="true"]{background:var(--dsw-alias-state-business-primary)}',
-      '.cs-cfg-switch:disabled{opacity:.4;cursor:default}',
-      '.cs-cfg-switch:focus-visible{outline:var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color,var(--dsw-alias-state-business-primary));outline-offset:2px}',
-      '.cs-cfg-switch-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:999px;background:var(--dsw-alias-bg-base);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .12s ease-out}',
-      '.cs-cfg-switch[aria-checked="true"] .cs-cfg-switch-thumb{transform:translateX(16px)}',
       '.cs-cfg-footer{display:flex;align-items:center;gap:8px;padding-top:16px}',
       '.cs-cfg-failed{flex:1;min-width:0;margin:0;font-size:12px;line-height:1.5;color:var(--dsw-alias-state-error-primary)}',
       '.cs-cfg-save{appearance:none;border:1px solid transparent;border-radius:var(--dsw-radius-md);padding:5px 14px;font:inherit;font-size:13px;line-height:1.5;cursor:pointer;background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-layer-3)}',
@@ -134,8 +128,8 @@ window.__ModuleLoader__.load({
      * Assistant prose is the `assistant-step` flow kind: `response` carries the
      * interim narration and the final answer, `reasoning` is the folded 思考
      * stream. A response marked as a turn-process member is interim narration, so
-     * it follows the 过程 scope; hidden members additionally need the folded-process
-     * setting before they are collected (they can be revealed with `beforematch`).
+     * it follows the 过程 scope; folded members are still collected and revealed
+     * with `beforematch` when navigated to.
      */
     function classifyContainer(el, scope) {
       const kind = el.getAttribute('data-chat-flow-kind');
@@ -146,8 +140,7 @@ window.__ModuleLoader__.load({
       if (el.getAttribute('data-chat-group-part') === 'reasoning') return null;
       if (!el.hasAttribute('data-turn-process-member')) return folded ? null : { hidden: false };
       if (scope.includeProcess !== true) return null;
-      if (!folded) return { hidden: false };
-      return scope.searchFoldedProcess === true ? { hidden: true } : null;
+      return { hidden: folded };
     }
 
     function collectMatches(root, re, scope) {
@@ -241,24 +234,13 @@ window.__ModuleLoader__.load({
     }
 
     const CONFIG_NS = 'chat-search';
-    const CONFIG_DEFAULTS = { transparencyPercent: 38, blurPx: 60, highlightPercent: 38, searchFoldedProcess: false };
+    const CONFIG_DEFAULTS = { transparencyPercent: 38, blurPx: 60, highlightPercent: 38 };
 
     /** The configure page's fields: label, hint and the value the stylesheet expects. */
     const STYLE_FIELDS = [
-      { key: 'transparencyPercent', kind: 'number', label: '透明度（%）', hint: '搜索条背景有多透；0 为完全不透明，100 为完全透明。', placeholder: '38' },
-      { key: 'blurPx', kind: 'number', label: '毛玻璃模糊（px）', hint: '背景模糊半径，取值 0–120；0 表示不模糊，数值越大越接近磨砂玻璃。', placeholder: '60' },
-      { key: 'highlightPercent', kind: 'number', label: '命中高亮强度（%）', hint: '命中文字上高亮块的不透明度，取值 0–100；0 表示不高亮。', placeholder: '38' },
-    ];
-
-    /** Everything the configure page renders; the first three also drive the bar's CSS. */
-    const CONFIG_FIELDS = [
-      ...STYLE_FIELDS,
-      {
-        key: 'searchFoldedProcess',
-        kind: 'boolean',
-        label: '折叠过程正文',
-        hint: '开启后，折叠起来的过程说明也参与搜索；定位到其中的命中时自动展开所在分组。关闭时与之前完全一致。',
-      },
+      { key: 'transparencyPercent', label: '透明度（%）', hint: '搜索条背景有多透；0 为完全不透明，100 为完全透明。', placeholder: '38' },
+      { key: 'blurPx', label: '毛玻璃模糊（px）', hint: '背景模糊半径，取值 0–120；0 表示不模糊，数值越大越接近磨砂玻璃。', placeholder: '60' },
+      { key: 'highlightPercent', label: '命中高亮强度（%）', hint: '命中文字上高亮块的不透明度，取值 0–100；0 表示不高亮。', placeholder: '38' },
     ];
 
     function numberSpec(field) {
@@ -274,22 +256,6 @@ window.__ModuleLoader__.load({
       };
     }
 
-    function booleanSpec(field) {
-      return {
-        key: field.key,
-        format: (value) => (value === true ? 'true' : 'false'),
-        parse: (text) => {
-          if (text === 'true') return { kind: 'set', value: true };
-          if (text === 'false') return { kind: 'set', value: false };
-          return undefined;
-        },
-      };
-    }
-
-    function specFor(field) {
-      return field.kind === 'boolean' ? booleanSpec(field) : numberSpec(field);
-    }
-
     function objectOrNull(value) {
       return value !== null && typeof value === 'object' ? value : null;
     }
@@ -302,7 +268,7 @@ window.__ModuleLoader__.load({
     class SettingsModel {
       constructor(form, fields) {
         this.form = form;
-        this.specs = new Map(fields.map((field) => [field.key, specFor(field)]));
+        this.specs = new Map(fields.map((field) => [field.key, numberSpec(field)]));
         this.staged = new Map();
         this.listeners = new Set();
         this.baseline = undefined;
@@ -455,18 +421,6 @@ window.__ModuleLoader__.load({
       };
     }
 
-    /** Whether folded process prose joins the search (configure page, off by default). */
-    function readFolded(model) {
-      try {
-        const snapshot = model.form.getSnapshot();
-        if (snapshot.status !== 'ready') return false;
-        const value = objectOrNull(snapshot.value);
-        return value !== null && value.searchFoldedProcess === true;
-      } catch (error) {
-        return false;
-      }
-    }
-
     function IconSearch({ size = 14 }) {
       return h('svg', { width: size, height: size, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', 'aria-hidden': true },
         h('circle', { cx: 7, cy: 7, r: 4.5 }),
@@ -500,7 +454,6 @@ window.__ModuleLoader__.load({
       const [history, setHistory] = useState(loadHistory);
       const [historyOpen, setHistoryOpen] = useState(false);
       const [style, setStyle] = useState(() => readStyle(model));
-      const [folded, setFolded] = useState(() => readFolded(model));
       const [error, setError] = useState(null);
       const inputRef = useRef(null);
       const barRef = useRef(null);
@@ -509,10 +462,7 @@ window.__ModuleLoader__.load({
       const [, forceRender] = useState(0);
 
       useEffect(() => {
-        const sync = () => {
-          setStyle(readStyle(model));
-          setFolded(readFolded(model));
-        };
+        const sync = () => setStyle(readStyle(model));
         sync();
         return model.form.subscribe(sync);
       }, [model]);
@@ -570,7 +520,7 @@ window.__ModuleLoader__.load({
           return;
         }
         setError(null);
-        const found = collectMatches(root, matcher.re, { includeProcess: opts.includeProcess === true, searchFoldedProcess: folded });
+        const found = collectMatches(root, matcher.re, { includeProcess: opts.includeProcess === true });
         deadRef.current = new Set();
         setMatches(found);
         // Only a new query navigates. A DOM-driven re-search (streaming, paging,
@@ -581,7 +531,7 @@ window.__ModuleLoader__.load({
         } else {
           setCurrent((value) => (found.length === 0 ? 0 : Math.min(value, found.length - 1)));
         }
-      }, [query, opts, folded, activate]);
+      }, [query, opts, activate]);
 
       useEffect(() => {
         const timer = setTimeout(() => runSearch(true), 120);
@@ -757,7 +707,7 @@ window.__ModuleLoader__.load({
           toggle('Aa', '区分大小写', opts.caseSensitive, () => setOpts((value) => ({ ...value, caseSensitive: !value.caseSensitive }))),
           toggle('W', '全词匹配', opts.wholeWord, () => setOpts((value) => ({ ...value, wholeWord: !value.wholeWord }))),
           toggle('.*', '正则匹配', opts.regex, () => setOpts((value) => ({ ...value, regex: !value.regex }))),
-          toggle('过程', '包含过程说明；折叠部分是否参与并自动展开由插件配置决定', opts.includeProcess, () => setOpts((value) => ({ ...value, includeProcess: !value.includeProcess })), true),
+          toggle('过程', '包含过程说明；折叠的过程会一并搜索，并在定位时自动展开', opts.includeProcess, () => setOpts((value) => ({ ...value, includeProcess: !value.includeProcess })), true),
           h('span', { className: 'cs-count' }, counter),
           h('button', { type: 'button', className: 'cs-btn', title: '上一个 (Shift+Enter)', onClick: () => go(-1) }, h(IconChevron, { up: true })),
           h('button', { type: 'button', className: 'cs-btn', title: '下一个 (Enter)', onClick: () => go(1) }, h(IconChevron, { up: false })),
@@ -771,7 +721,7 @@ window.__ModuleLoader__.load({
           }))));
     }
 
-    /** One labelled field: a number input, or a switch for boolean settings. */
+    /** One labelled number field: label, staged text, hint, and the reset affordance. */
     function ConfigField({ model, spec, disabled }) {
       const state = model.field(spec.key);
       const id = 'chat-search-' + spec.key;
@@ -779,25 +729,6 @@ window.__ModuleLoader__.load({
       const overridden = state.overridden ? h('span', { className: 'cs-cfg-badges' },
         h('span', { className: 'cs-cfg-tag' }, '已覆盖'),
         h('button', { type: 'button', className: 'cs-cfg-reset', disabled: disabled, onClick: () => model.resetField(spec.key) }, '恢复默认')) : null;
-
-      if (spec.kind === 'boolean') {
-        const checked = state.text === 'true';
-        return h('div', { className: 'cs-cfg-field' },
-          h('div', { className: 'cs-cfg-head' },
-            h('label', { className: 'cs-cfg-label', htmlFor: id }, spec.label),
-            overridden,
-            h('button', {
-              id: id,
-              type: 'button',
-              role: 'switch',
-              className: 'cs-cfg-switch',
-              'aria-checked': checked,
-              'aria-describedby': messageId,
-              disabled: disabled,
-              onClick: () => model.edit(spec.key, checked ? 'false' : 'true'),
-            }, h('span', { className: 'cs-cfg-switch-thumb' }))),
-          h('p', { id: messageId, className: 'cs-cfg-hint' }, spec.hint));
-      }
 
       return h('div', { className: 'cs-cfg-field' },
         h('div', { className: 'cs-cfg-head' },
@@ -836,7 +767,7 @@ window.__ModuleLoader__.load({
       if (!shell.available) return h('p', { className: 'cs-cfg-note', role: 'status' }, '该插件当前未加载，暂时无法配置。');
       return h('div', { className: 'cs-cfg-form' },
         shell.writable ? null : h('p', { className: 'cs-cfg-note', role: 'status' }, '本部署的设置为只读。'),
-        CONFIG_FIELDS.map((spec) => h(ConfigField, { key: spec.key, model: model, spec: spec, disabled: !shell.writable })),
+        STYLE_FIELDS.map((spec) => h(ConfigField, { key: spec.key, model: model, spec: spec, disabled: !shell.writable })),
         h('div', { className: 'cs-cfg-footer' },
           shell.failed ? h('p', { className: 'cs-cfg-failed', role: 'status' }, '本部署没有接受这些值，已保留供你修改。') : null,
           h('button', {
@@ -868,7 +799,7 @@ window.__ModuleLoader__.load({
     return {
       inject: ['slots', 'configForms'],
       apply(ctx) {
-        const model = new SettingsModel(ctx.configForms.get(CONFIG_NS), CONFIG_FIELDS);
+        const model = new SettingsModel(ctx.configForms.get(CONFIG_NS), STYLE_FIELDS);
         ctx.effect(() => () => model.dispose(), 'chat-search: config form');
         ctx.effect(() => {
           ensureStyle();

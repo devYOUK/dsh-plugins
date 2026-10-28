@@ -8,8 +8,8 @@
 
 - 始终搜索：用户与 steering 轮次、最终回答、可见的 response 文本、compact answer。
 - 永不搜索：`reasoning`、tool-call、`turn-process` 包装节点。
-- 过程说明（`data-turn-process-member`）跟随搜索条的「过程」开关。
-- 折叠的过程行是 `hidden="until-found"`；「折叠过程正文」配置打开后才会被收集，命中时派发 `beforematch` 展开，等 `hidden`/`data-chat-motion` 清空后再测量滚动（600ms 上限）。展开失败的行从计数中剔除。
+- 过程说明（`data-turn-process-member`）跟随搜索条的「过程」开关；折叠的过程行也一并收集。
+- 折叠的过程行是 `hidden="until-found"`，命中时派发 `beforematch` 展开，等 `hidden`/`data-chat-motion` 清空后再测量滚动（600ms 上限）。展开失败的行从计数中剔除。
 
 收集逻辑集中在 `classifyContainer()`，返回 `null` / `{ hidden: false }` / `{ hidden: true }`；导航统一走 `activate()`。修改搜索范围只需要动这两处。
 
@@ -22,7 +22,6 @@ Host 的 `Config` 命名空间就是插件行 id `chat-search`，客户端通过
 | `transparencyPercent` | number 0–100 | 38 | 搜索条背景透明度 |
 | `blurPx` | number 0–120 | 60 | `backdrop-filter: blur()` 半径 |
 | `highlightPercent` | number 0–100 | 38 | 命中高亮 alpha |
-| `searchFoldedProcess` | boolean | false | 折叠过程正文参与搜索并自动展开 |
 
 配置写入落在 profile 的 `cordis.patch.yml`，形如：
 
@@ -38,7 +37,7 @@ Host 的 `Config` 命名空间就是插件行 id `chat-search`，客户端通过
 
 注册在 `plugins.row.config`，键为 `@local/dsh-chat-search#chat-search`。表单是**暂存**模型：编辑只改本地草稿，保存时用首次编辑读到的 revision 做一次 `mutate`，被拒保留草稿并提示。`已覆盖` / `恢复默认` 依据 `snapshot.user` 是否包含该键。
 
-字段的标记结构与 CSS 抄自宿主 `ui-primitives` 的 settings-form（`role="switch"`、`aria-checked`、输入框与提示的尺寸），但**不要**从插件里 import 那个包；样式只用主题 token。
+字段的标记结构与 CSS 抄自宿主 `ui-primitives` 的 settings-form（输入框与提示的尺寸、已覆盖标签），但**不要**从插件里 import 那个包；样式只用主题 token。
 
 ## 搜索条与高亮
 
