@@ -1,5 +1,7 @@
 # dsh-plugins
 
+English | [中文](README.zh.md)
+
 Local DSH plugin workspace. Every directory under `packages/` is an independent
 DSH bundle: a Host half (`index.js`), a Client half (`client.js`), and a
 `cordis.patch.yml` that inserts the plugin row.
