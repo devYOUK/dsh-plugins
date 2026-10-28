@@ -9,6 +9,7 @@
 | `specs/` | 每个功能一份规格 |
 | `specs/_template/` | 新建规格时复制/替换的三份模板 |
 | `plugins/` | 已交付插件的实现说明（根目录 README 面向使用者，这里面向维护者） |
+| `development.md` | 目录结构、热更新、插件实现说明的入口 |
 | `BOARD.md` | 看板：按状态分组的规格清单，由 `npm run spec:index` 生成 |
 | `specs/README.md` | 索引：按编号排列的完整表格，同样由 `npm run spec:index` 生成 |
 

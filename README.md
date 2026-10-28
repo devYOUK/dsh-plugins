@@ -107,42 +107,6 @@ clean slate.
 - Search history: `localStorage` key `dsh-chat-search:history` (per browser,
   capped at 20 entries).
 
-## Development
-
-The repo uses spec-driven development: behavior is specified under
-`docs/specs/<NNNN>-<slug>/` before it is implemented. The generated status
-board is [`docs/BOARD.md`](docs/BOARD.md); the rules and lifecycle are in
-[`docs/README.md`](docs/README.md).
-
-```powershell
-npm run spec:new -- <slug> "<title>"   # scaffold a spec from the template
-npm run spec:check                     # validate specs and generated docs
-npm run spec:index                     # rebuild the board and index
-npm run check                          # syntax-check every plugin entry
-```
-
-Layout:
-
-```
-packages/<name>/   index.js (Host), client.js (Client), cordis.patch.yml, locale/, icon.svg
-docs/specs/        one directory per feature: spec.md, plan.md, tasks.md
-docs/plugins/      implementation notes for the shipped plugins
-scripts/           check.mjs, spec-check.mjs, spec-new.mjs
-AGENTS.md          rules for agents working in this repo
-```
-
-Hot updates while iterating:
-
-| Change | Effect |
-|---|---|
-| `client.js` | swapped by the Client HMR receiver within ~1 s, no reload |
-| `index.js` | applied at the next profile recomposition; add a line or comment to `.dsh/profiles/<name>/cordis.patch.yml` to trigger one — an mtime-only touch does not fire the Windows watcher |
-| new/removed package | same: a profile recomposition, not `dsh plugin add` alone |
-
-Deep dives: [`docs/plugins/chat-search.md`](docs/plugins/chat-search.md),
-[`docs/plugins/git-branch-pill.md`](docs/plugins/git-branch-pill.md). To start a
-new plugin, copy one of the existing packages and rename it.
-
 ## License
 
 MIT — see [LICENSE](LICENSE).

@@ -86,37 +86,6 @@ dsh plugin --profile desktop remove @local/dsh-git-branch-pill
 - 配置：上面的 profile patch，`- id: chat-search` 段。
 - 搜索历史：`localStorage` 的 `dsh-chat-search:history`（按浏览器，最多 20 条）。
 
-## 开发
-
-本仓库使用规格驱动开发（SDD）：行为先写进 `docs/specs/<NNNN>-<slug>/` 再实现。生成的看板在 [`docs/BOARD.md`](docs/BOARD.md)，规则与生命周期见 [`docs/README.md`](docs/README.md)。
-
-```powershell
-npm run spec:new -- <slug> "<标题>"    # 从模板生成规格
-npm run spec:check                     # 校验规格与生成物
-npm run spec:index                     # 重建看板与索引
-npm run check                          # 各插件入口的语法检查
-```
-
-目录：
-
-```
-packages/<name>/   index.js（Host）、client.js（Client）、cordis.patch.yml、locale/、icon.svg
-docs/specs/        每个功能一个目录：spec.md、plan.md、tasks.md
-docs/plugins/      已交付插件的实现说明
-scripts/           check.mjs、spec-check.mjs、spec-new.mjs
-AGENTS.md          本仓库的 agent 规则
-```
-
-迭代时的热更新：
-
-| 改动 | 效果 |
-|---|---|
-| `client.js` | Client HMR 接收器约 1 秒内换掉，无需刷新 |
-| `index.js` | 下一次 profile 重组时生效；往 `.dsh/profiles/<name>/cordis.patch.yml` 写一行内容或注释即可触发——只改 mtime 不会触发 Windows 的文件监听 |
-| 新增/移除包 | 同上：需要一次 profile 重组，光跑 `dsh plugin add` 不够 |
-
-深入阅读：[`docs/plugins/chat-search.md`](docs/plugins/chat-search.md)、[`docs/plugins/git-branch-pill.md`](docs/plugins/git-branch-pill.md)。要新写插件，复制任一现有插件目录再改名。
-
 ## License
 
 MIT，见 [LICENSE](LICENSE)。
