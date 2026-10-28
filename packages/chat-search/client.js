@@ -427,12 +427,6 @@ window.__ModuleLoader__.load({
         h('path', { d: 'M10.5 10.5L14 14' }));
     }
 
-    function IconCornerDownLeft() {
-      return h('svg', { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true },
-        h('path', { d: 'M12.5 3v5a2 2 0 0 1-2 2H4' }),
-        h('path', { d: 'M6.5 7.5L4 10l2.5 2.5' }));
-    }
-
     function IconChevron({ up }) {
       return h('svg', { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true },
         h('path', { d: up ? 'M4 10l4-4 4 4' : 'M4 6l4 4 4-4' }));
@@ -634,22 +628,6 @@ window.__ModuleLoader__.load({
         activate(next, matches, delta);
       }, [matches, current, activate]);
 
-      const insertNewline = () => {
-        const el = inputRef.current;
-        if (el === null) {
-          setQuery((value) => value + '\n');
-          return;
-        }
-        const start = el.selectionStart === null ? query.length : el.selectionStart;
-        const end = el.selectionEnd === null ? start : el.selectionEnd;
-        const next = query.slice(0, start) + '\n' + query.slice(end);
-        setQuery(next);
-        window.requestAnimationFrame(() => {
-          el.focus();
-          el.setSelectionRange(start + 1, start + 1);
-        });
-      };
-
       const onKeyDown = (event) => {
         if (event.key === 'Enter' && !event.shiftKey) {
           event.preventDefault();
@@ -703,7 +681,6 @@ window.__ModuleLoader__.load({
             },
             onKeyDown: onKeyDown,
           }),
-          h('button', { type: 'button', className: 'cs-btn', title: '插入换行', onMouseDown: (event) => event.preventDefault(), onClick: insertNewline }, h(IconCornerDownLeft, null)),
           toggle('Aa', '区分大小写', opts.caseSensitive, () => setOpts((value) => ({ ...value, caseSensitive: !value.caseSensitive }))),
           toggle('W', '全词匹配', opts.wholeWord, () => setOpts((value) => ({ ...value, wholeWord: !value.wholeWord }))),
           toggle('.*', '正则匹配', opts.regex, () => setOpts((value) => ({ ...value, regex: !value.regex }))),
