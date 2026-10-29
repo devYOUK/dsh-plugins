@@ -1,6 +1,6 @@
 ---
 id: 0003
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 # 0003 · 任务
@@ -18,3 +18,4 @@ updated: 2026-10-28
 - [x] 8 秒轮询与打开时刷新，卸载清理定时器
 - [x] Remote 不可用时读 `.git/HEAD` 的降级路径
 - [x] 错误码与悬停提示（`session-required` / `cwd-unavailable` / `not-a-git-repo` / `git-error`）
+- [x] 非仓库等失败场景在状态行用红字显示错误码

@@ -44,8 +44,8 @@ status row, showing the current branch.
 
 - Click it for a popover: branch, insertions (`+n`), deletions (`−n`), and the
   number of untracked files.
-- Detached HEAD shows the short SHA; a non-repository workspace shows `?` with
-  the reason on hover.
+- Detached HEAD shows the short SHA; a non-repository workspace shows the
+  error code (`not-a-git-repo`) in red, with the full reason on hover.
 - Refreshes every 8 seconds and when the popover opens. No configuration.
 
 ## Install

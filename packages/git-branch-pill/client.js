@@ -234,7 +234,9 @@ window.__ModuleLoader__.load({
       if (sessionId === undefined) return null;
       if (data === null && error === null) return null;
 
-      const label = data !== null ? (data.branch || '?') : '?';
+      const failed = data === null && error !== null;
+      const label = data !== null ? (data.branch || '?') : (failed ? error : '?');
+      const buttonStyle = failed ? { ...pillStyle, color: 'var(--dsw-alias-state-error-primary)' } : pillStyle;
       const onClick = () => {
         if (buttonRef.current !== null) setRect(buttonRef.current.getBoundingClientRect());
         setOpen((value) => {
@@ -247,7 +249,7 @@ window.__ModuleLoader__.load({
         h('button', {
           ref: buttonRef,
           type: 'button',
-          style: pillStyle,
+          style: buttonStyle,
           title: data !== null ? '当前 Git 分支，点击查看改动' : (error || ''),
           'aria-haspopup': 'dialog',
           'aria-expanded': open,
