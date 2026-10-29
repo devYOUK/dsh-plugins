@@ -29,13 +29,12 @@ window.__ModuleLoader__.load({
 
     const labelStyle = { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' };
 
-    function BranchIcon({ size = 14, color }) {
+    function BranchIcon({ size = 14 }) {
       return h('svg', {
         width: size, height: size, viewBox: '0 0 16 16',
         fill: 'none', stroke: 'currentColor', strokeWidth: 1.5,
         strokeLinecap: 'round', strokeLinejoin: 'round',
         'aria-hidden': true,
-        style: color === undefined ? undefined : { color: color, stroke: color },
       },
       h('circle', { cx: 11.5, cy: 3.5, r: 1.75 }),
       h('circle', { cx: 4.5, cy: 12.5, r: 1.75 }),
@@ -237,7 +236,7 @@ window.__ModuleLoader__.load({
 
       const failed = data === null && error !== null;
       const label = data !== null ? (data.branch || '?') : (failed ? error : '?');
-      const buttonStyle = failed ? { ...pillStyle, color: 'var(--dsw-alias-state-error-primary)' } : pillStyle;
+      const labelStyleUsed = failed ? { ...labelStyle, color: 'var(--dsw-alias-state-error-primary)' } : labelStyle;
       const onClick = () => {
         if (buttonRef.current !== null) setRect(buttonRef.current.getBoundingClientRect());
         setOpen((value) => {
@@ -250,7 +249,7 @@ window.__ModuleLoader__.load({
         h('button', {
           ref: buttonRef,
           type: 'button',
-          style: buttonStyle,
+          style: pillStyle,
           title: data !== null ? '当前 Git 分支，点击查看改动' : (error || ''),
           'aria-haspopup': 'dialog',
           'aria-expanded': open,
@@ -258,8 +257,8 @@ window.__ModuleLoader__.load({
           onMouseEnter: (event) => { event.currentTarget.style.background = 'var(--dsw-alias-interactive-bg-hover)'; },
           onMouseLeave: (event) => { event.currentTarget.style.background = 'transparent'; },
         },
-        h(BranchIcon, { color: failed ? 'var(--dsw-alias-state-error-primary)' : undefined }),
-        h('span', { style: labelStyle }, label)),
+        h(BranchIcon, null),
+        h('span', { style: labelStyleUsed }, label)),
         open && rect !== null ? h('div', { ref: panelRef, style: { display: 'contents' } }, h(Panel, { data, error, rect })) : null);
     }
 
