@@ -29,12 +29,13 @@ window.__ModuleLoader__.load({
 
     const labelStyle = { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' };
 
-    function BranchIcon({ size = 14 }) {
+    function BranchIcon({ size = 14, color }) {
       return h('svg', {
         width: size, height: size, viewBox: '0 0 16 16',
         fill: 'none', stroke: 'currentColor', strokeWidth: 1.5,
         strokeLinecap: 'round', strokeLinejoin: 'round',
         'aria-hidden': true,
+        style: color === undefined ? undefined : { color: color, stroke: color },
       },
       h('circle', { cx: 11.5, cy: 3.5, r: 1.75 }),
       h('circle', { cx: 4.5, cy: 12.5, r: 1.75 }),
@@ -257,7 +258,7 @@ window.__ModuleLoader__.load({
           onMouseEnter: (event) => { event.currentTarget.style.background = 'var(--dsw-alias-interactive-bg-hover)'; },
           onMouseLeave: (event) => { event.currentTarget.style.background = 'transparent'; },
         },
-        h(BranchIcon, null),
+        h(BranchIcon, { color: failed ? 'var(--dsw-alias-state-error-primary)' : undefined }),
         h('span', { style: labelStyle }, label)),
         open && rect !== null ? h('div', { ref: panelRef, style: { display: 'contents' } }, h(Panel, { data, error, rect })) : null);
     }
