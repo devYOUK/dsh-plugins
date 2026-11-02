@@ -35,5 +35,6 @@ npm run check                          # 各插件入口的语法检查
 
 - [对话内搜索（chat-search）](plugins/chat-search.md)
 - [Git 分支速览（git-branch-pill）](plugins/git-branch-pill.md)
+- [工作区右键菜单（workspace-menu）](plugins/workspace-menu.md)
 
 要新写插件，复制任一 `packages/<name>` 目录再改名；结构见上面的目录说明。提交前跑 `npm run check` 与 `npm run spec:check`。

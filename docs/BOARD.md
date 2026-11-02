@@ -6,7 +6,7 @@
 
 | 草稿（draft） | 待实现（approved） | 实现中（implementing） | 已完成（done） | 已作废（superseded） |
 |---|---|---|---|---|
-| 0 | 0 | 0 | 3 | 0 |
+| 0 | 0 | 0 | 4 | 0 |
 
 ## 草稿 · draft（0）
 
@@ -20,8 +20,9 @@ _暂无_
 
 _暂无_
 
-## 已完成 · done（3）
+## 已完成 · done（4）
 
+- [0004 工作区右键菜单](specs/0004-workspace-context-menu/spec.md) · `9/9` · 2026-11-02
 - [0003 Git 分支速览](specs/0003-git-branch-pill/spec.md) · `12/12` · 2026-10-29
 - [0001 对话内搜索（chat-search）](specs/0001-chat-search/spec.md) · `10/10` · 2026-10-28
 - [0002 折叠过程正文的搜索与自动展开](specs/0002-chat-search-process-expand/spec.md) · `10/10` · 2026-10-28

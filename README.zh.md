@@ -10,8 +10,9 @@
 |---|---|---|
 | 对话内搜索 / In-conversation Search | `@local/dsh-chat-search` | `Ctrl+F` 在会话正文里搜索：高亮、历史、毛玻璃搜索条，可选折叠过程搜索 |
 | Git 分支速览 / Git Branch Glance | `@local/dsh-git-branch-pill` | 输入框状态行里的分支与改动统计 pill |
+| 工作区右键菜单 / Workspace Context Menu | `@local/dsh-workspace-menu` | 右键工作区行：用文件资源管理器打开、重命名 |
 
-两个插件都面向当前 DSH Web 客户端，依赖宿主提供的 slot 与服务（`conversation.composer.dock`、`plugins.row.config`、`ctx.configForms`），DSH 大版本升级后可能需要小幅适配。
+三个插件都面向当前 DSH Web 客户端，依赖宿主提供的 slot 与服务（`conversation.composer.dock`、`plugins.row.config`、`shell.overlay`、`ctx.configForms`），DSH 大版本升级后可能需要小幅适配。
 
 ## 对话内搜索（chat-search）
 
@@ -37,6 +38,15 @@
 - detached HEAD 显示短 SHA；非 git 仓库在状态行用红字显示错误码（如 `not-a-git-repo`），悬停给出完整原因。
 - 每 8 秒刷新一次，打开浮层时也刷新。没有配置项。
 
+## 工作区右键菜单（workspace-menu）
+
+在侧栏的工作区行上右键：
+
+- **用文件资源管理器打开**——通过 Host 的原生 opener 打开该工作区目录。
+- **重命名**——弹出预填当前标题的小对话框，确认后经工作区服务保存。
+
+点击菜单外、按 `Esc`、滚动或窗口失焦都会关闭菜单。它只对工作区行生效；在其他地方右键仍是应用自己的菜单。
+
 ## 安装
 
 ### 前置
@@ -50,7 +60,7 @@
 2. 点 **添加插件**，展开箭头菜单，选择 **安装第三方插件**。
 3. 填入某个包目录的绝对路径，例如 `<repo>\packages\chat-search`，点 **安装**。
 4. 安装完成后点 **立即启用**。
-5. 需要分支 pill 的话，对 `<repo>\packages\git-branch-pill` 重复以上步骤。
+5. 需要分支 pill 和工作区右键菜单的话，对 `<repo>\packages\git-branch-pill`、`<repo>\packages\workspace-menu` 重复以上步骤。
 
 插件页会替你完成安装、选中 bundle 和 profile 重组。
 
@@ -59,15 +69,17 @@
 ```powershell
 dsh plugin --profile desktop add <repo>\packages\chat-search
 dsh plugin --profile desktop add <repo>\packages\git-branch-pill
+dsh plugin --profile desktop add <repo>\packages\workspace-menu
 ```
 
-`dsh plugin add` 只改 profile 清单，所以装完要重启 DSH（或触发一次 profile 重组），然后在插件页确认两个 bundle 及其行都已打开。
+`dsh plugin add` 只改 profile 清单，所以装完要重启 DSH（或触发一次 profile 重组），然后在插件页确认所有 bundle 及其行都已打开。
 
 ### 验证
 
-- 插件页里 **对话内搜索** 与 **Git 分支速览** 显示为已安装、已启用。
+- 插件页里 **对话内搜索**、**Git 分支速览** 与 **工作区右键菜单** 显示为已安装、已启用。
 - `Ctrl+F` 能打开搜索条，输入关键词有高亮，配置页显示三个字段。
 - 输入框状态行出现分支 pill，点击能弹出浮层。
+- 右键工作区行能弹出两项菜单。
 
 ## 卸载
 
@@ -76,6 +88,7 @@ dsh plugin --profile desktop add <repo>\packages\git-branch-pill
 ```powershell
 dsh plugin --profile desktop remove @local/dsh-chat-search
 dsh plugin --profile desktop remove @local/dsh-git-branch-pill
+dsh plugin --profile desktop remove @local/dsh-workspace-menu
 ```
 
 之后重启 DSH。配置写在 profile patch（`.dsh/profiles/<profile>/cordis.patch.yml`）里，不在包内，所以卸载不会删掉它；想要干净的状态，手动删掉 `- id: chat-search` 那一段。

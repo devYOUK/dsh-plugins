@@ -12,10 +12,11 @@ in the app; the source also doubles as a reference for writing your own.
 |---|---|---|
 | 对话内搜索 / In-conversation Search | `@local/dsh-chat-search` | `Ctrl+F` search over the transcript: highlights, history, glass-styled bar, optional folded-process search |
 | Git 分支速览 / Git Branch Glance | `@local/dsh-git-branch-pill` | Branch and diff-stat pill in the composer status row |
+| 工作区右键菜单 / Workspace Context Menu | `@local/dsh-workspace-menu` | Right-click a workspace row: open it in Explorer, or rename it |
 
-Both target the current DSH Web client. They rely on host slots and services
-(`conversation.composer.dock`, `plugins.row.config`, `ctx.configForms`), so a
-major DSH upgrade may need small adjustments.
+All three target the current DSH Web client. They rely on host slots and
+services (`conversation.composer.dock`, `plugins.row.config`, `shell.overlay`,
+`ctx.configForms`), so a major DSH upgrade may need small adjustments.
 
 ## In-conversation Search (chat-search)
 
@@ -48,6 +49,18 @@ status row, showing the current branch.
   error code (`not-a-git-repo`) in red, with the full reason on hover.
 - Refreshes every 8 seconds and when the popover opens. No configuration.
 
+## Workspace Context Menu (workspace-menu)
+
+Right-click a workspace row in the sidebar:
+
+- **Open in File Explorer** — opens the workspace directory through the host's
+  native opener.
+- **Rename** — opens a small dialog prefilled with the current title and saves
+  through the workspace service.
+
+The menu closes on an outside click, `Esc`, scrolling or window blur. It only
+reacts to workspace rows; right-clicking anywhere else keeps the app's own menu.
+
 ## Install
 
 ### Prerequisites
@@ -64,7 +77,9 @@ status row, showing the current branch.
 3. Enter the absolute path of one package directory, for example
    `<repo>\packages\chat-search`, press **安装**.
 4. When the install finishes, click **立即启用**.
-5. Repeat for `<repo>\packages\git-branch-pill` if you want the branch pill.
+5. Repeat for `<repo>\packages\git-branch-pill` and
+   `<repo>\packages\workspace-menu` if you want the branch pill and the
+   workspace context menu.
 
 The page installs, selects the bundle and recomposes the profile for you.
 
@@ -73,19 +88,21 @@ The page installs, selects the bundle and recomposes the profile for you.
 ```powershell
 dsh plugin --profile desktop add <repo>\packages\chat-search
 dsh plugin --profile desktop add <repo>\packages\git-branch-pill
+dsh plugin --profile desktop add <repo>\packages\workspace-menu
 ```
 
 `dsh plugin add` only edits the profile manifest, so restart DSH afterwards (or
-trigger a profile recomposition) and confirm both bundles — and their rows —
+trigger a profile recomposition) and confirm all bundles — and their rows —
 are switched on in the Plugins page.
 
 ### Verify
 
-- The Plugins page lists **对话内搜索** and **Git 分支速览** as installed and
-  enabled.
+- The Plugins page lists **对话内搜索**, **Git 分支速览** and **工作区右键菜单**
+  as installed and enabled.
 - `Ctrl+F` opens the search bar, typing highlights matches, and the 配置 page
   shows three fields.
 - The composer status row shows the branch pill; clicking it opens the popover.
+- Right-clicking a workspace row opens the two-item menu.
 
 ## Uninstall
 
@@ -94,6 +111,7 @@ From the Plugins page: open the bundle and choose **卸载**. Or from the CLI:
 ```powershell
 dsh plugin --profile desktop remove @local/dsh-chat-search
 dsh plugin --profile desktop remove @local/dsh-git-branch-pill
+dsh plugin --profile desktop remove @local/dsh-workspace-menu
 ```
 
 Restart DSH afterwards. Settings are persisted in the profile patch
