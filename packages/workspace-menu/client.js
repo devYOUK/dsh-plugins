@@ -8,10 +8,15 @@ window.__ModuleLoader__.load({
     const NS = 'workspace.menu';
     const ROW_PREFIX = 'workspace:';
     const MENU_WIDTH = 208;
-    const MENU_HEIGHT = 92;
+    const MENU_HEIGHT = 128;
+    const FAVORITES_KEY = 'dsh-workspace-menu:favorites';
+    const FAVORITE_ATTR = 'data-workspace-favorite';
+    const FAVORITE_CSS = '[data-workspace-favorite="true"] [class*="title"]{color:var(--dsw-alias-state-business-primary)}';
 
     const zh = {
       openInExplorer: '用文件资源管理器打开',
+      addFavorite: '添加收藏',
+      removeFavorite: '取消收藏',
       rename: '重命名',
       renameTitle: '重命名工作区',
       renameHint: '输入新的工作区名称。',
@@ -25,6 +30,8 @@ window.__ModuleLoader__.load({
 
     const en = {
       openInExplorer: 'Open in File Explorer',
+      addFavorite: 'Add to favorites',
+      removeFavorite: 'Remove from favorites',
       rename: 'Rename',
       renameTitle: 'Rename workspace',
       renameHint: 'Enter a new workspace name.',
@@ -149,6 +156,35 @@ window.__ModuleLoader__.load({
       return String((error && error.message) || error);
     }
 
+    function loadFavorites() {
+      try {
+        const raw = window.localStorage.getItem(FAVORITES_KEY);
+        if (raw === null) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string' && id !== '') : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveFavorites(ids) {
+      try {
+        window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids));
+      } catch (error) {}
+    }
+
+    function markFavorites(ids) {
+      const wanted = new Set(ids);
+      const rows = document.querySelectorAll('[data-row-key^="workspace:"]');
+      for (const row of rows) {
+        const key = row.getAttribute('data-row-key');
+        if (key === null) continue;
+        const workspaceId = key.slice(ROW_PREFIX.length);
+        if (wanted.has(workspaceId)) row.setAttribute(FAVORITE_ATTR, 'true');
+        else row.removeAttribute(FAVORITE_ATTR);
+      }
+    }
+
     function menuPosition(x, y) {
       return {
         left: Math.max(8, Math.min(x, window.innerWidth - MENU_WIDTH - 8)),
@@ -162,6 +198,7 @@ window.__ModuleLoader__.load({
       const [hover, setHover] = useState(null);
       const [rename, setRename] = useState(null);
       const [toast, setToast] = useState(null);
+      const [favorites, setFavorites] = useState(loadFavorites);
       const menuRef = useRef(null);
       const inputRef = useRef(null);
 
@@ -229,6 +266,36 @@ window.__ModuleLoader__.load({
         return () => window.clearTimeout(timer);
       }, [toast]);
 
+      useEffect(() => {
+        markFavorites(favorites);
+        const root = document.querySelector('[data-slot="sidebar"]') ?? document.body;
+        let frame = 0;
+        const schedule = () => {
+          if (frame !== 0) return;
+          frame = window.requestAnimationFrame(() => {
+            frame = 0;
+            markFavorites(favorites);
+          });
+        };
+        const observer = new MutationObserver(schedule);
+        observer.observe(root, { childList: true, subtree: true });
+        return () => {
+          observer.disconnect();
+          if (frame !== 0) window.cancelAnimationFrame(frame);
+        };
+      }, [favorites]);
+
+      const toggleFavorite = (workspaceId) => {
+        setFavorites((current) => {
+          const next = current.includes(workspaceId)
+            ? current.filter((id) => id !== workspaceId)
+            : current.concat([workspaceId]);
+          saveFavorites(next);
+          return next;
+        });
+        setMenu(null);
+      };
+
       const openFolder = async (workspace) => {
         setMenu(null);
         try {
@@ -268,9 +335,14 @@ window.__ModuleLoader__.load({
         onClick: action,
       }, label);
 
+      const menuFavorite = menu !== null && favorites.includes(menu.workspace.workspaceId);
+
       return h(React.Fragment, null,
         menu === null ? null : h('div', { ref: menuRef, role: 'menu', style: { ...menuStyle, left: menu.left, top: menu.top } },
           menuItem('open', t('openInExplorer'), () => { openFolder(menu.workspace); }),
+          menuItem('favorite', menuFavorite ? t('removeFavorite') : t('addFavorite'), () => {
+            toggleFavorite(menu.workspace.workspaceId);
+          }),
           menuItem('rename', t('rename'), () => {
             setRename({ workspace: menu.workspace, value: menu.workspace.title, error: null, busy: false });
             setMenu(null);
@@ -306,6 +378,15 @@ window.__ModuleLoader__.load({
       apply(ctx) {
         const t = ctx.locale.bind(NS);
         ctx.effect(() => ctx.locale.register(NS, { zh: zh, en: en }), 'workspace-menu: dictionaries');
+        ctx.effect(() => {
+          const style = document.createElement('style');
+          style.setAttribute('data-workspace-menu', '1');
+          style.textContent = FAVORITE_CSS;
+          document.head.appendChild(style);
+          return () => {
+            style.remove();
+          };
+        }, 'workspace-menu: favorite styles');
         ctx.slots.inject('shell.overlay', () => ctx.slots.register({
           name: 'shell.overlay',
           id: 'workspace-menu',

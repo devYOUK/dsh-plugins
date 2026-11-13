@@ -55,6 +55,8 @@ Right-click a workspace row in the sidebar:
 
 - **Open in File Explorer** — opens the workspace directory through the host's
   native opener.
+- **Add to favorites / Remove from favorites** — a favorited workspace name is
+  tinted with the DSH theme blue; the choice is stored per browser.
 - **Rename** — opens a small dialog prefilled with the current title and saves
   through the workspace service.
 
