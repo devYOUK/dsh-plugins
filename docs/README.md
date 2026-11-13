@@ -19,5 +19,5 @@
 ## 当前状态
 
 - 已迁移 4 份规格（0001–0004），均为 S 级，状态 `released`，见 [`spec/README.md`](spec/README.md)。
-- 这些规格是交付后补录的；新需求按 `spec-workflow.md` 的门禁从 G1 开始。
+- 这些规格是交付后补录的；G5 已于 2026-11-13 由用户明确认可「全部 spec 验收通过」，G2 仍为补录记录。新需求按 `spec-workflow.md` 的门禁从 G1 开始。
 - 已知未实机验证的项记录在各 spec 的 `05-acceptance.md`。
