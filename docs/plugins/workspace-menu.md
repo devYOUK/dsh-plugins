@@ -12,7 +12,7 @@
 ## 动作
 
 - 打开目录：`ctx.remote.session.openWorkspacePath({ path })`，返回 `{ ok: true }` 信封；失败可能是 `ok: false` 或抛错，两种都转成底部 toast。该 Remote 要求 Host 能把路径映射到本机，远程/容器部署会被拒绝。
-- 收藏：工作区 id 数组存在 `localStorage` 的 `dsh-workspace-menu:favorites`。收藏时给行元素加 `data-workspace-favorite="true"`，注入的样式 `[data-workspace-favorite="true"] [class*="title"]{color:var(--dsw-alias-state-business-primary)}` 把名称染成主题蓝；取消收藏移除属性。侧栏用 MutationObserver 监听，行重建后重新打标。
+- 收藏：工作区 id 数组存在 `localStorage` 的 `dsh-workspace-menu:favorites`。收藏时给行元素加 `data-workspace-favorite="true"`，注入的样式 `[data-workspace-favorite="true"] [class*="title"]{color:var(--dsw-alias-state-business-primary);font-weight:600}` 把名称染成主题蓝并加粗；取消收藏移除属性。侧栏用 MutationObserver 监听，行重建后重新打标。
 - 重命名：自绘对话框（`role="dialog"`），输入框预填当前标题并聚焦，提交调用 `ctx.workspaces.rename(workspaceId, title)`；空白值禁用提交，服务失败时保留对话框并在下方显示原因。
 
 ## 关闭与提示

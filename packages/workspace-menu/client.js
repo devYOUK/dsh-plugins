@@ -11,7 +11,7 @@ window.__ModuleLoader__.load({
     const MENU_HEIGHT = 128;
     const FAVORITES_KEY = 'dsh-workspace-menu:favorites';
     const FAVORITE_ATTR = 'data-workspace-favorite';
-    const FAVORITE_CSS = '[data-workspace-favorite="true"] [class*="title"]{color:var(--dsw-alias-state-business-primary)}';
+    const FAVORITE_CSS = '[data-workspace-favorite="true"] [class*="title"]{color:var(--dsw-alias-state-business-primary);font-weight:600}';
 
     const zh = {
       openInExplorer: '用文件资源管理器打开',

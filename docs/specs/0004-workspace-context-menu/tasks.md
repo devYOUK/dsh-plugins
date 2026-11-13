@@ -14,7 +14,7 @@ updated: 2026-11-13
 - [x] 打开目录失败提示
 - [x] 关闭路径：外部点击、`Esc`、滚动、缩放、失焦
 - [x] 收藏/取消收藏菜单项与 localStorage 持久化
-- [x] 收藏后名称染主题蓝，行重建后重新打标（MutationObserver）
+- [x] 收藏后名称染主题蓝并加粗，行重建后重新打标（MutationObserver）
 - [x] 安装 bundle 并确认 slot 注册 active
 - [x] README、实现说明与看板更新
 - [x] `npm run check` / `npm run spec:check` 通过
