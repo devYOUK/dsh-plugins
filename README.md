@@ -128,6 +128,14 @@ clean slate.
 - Search history: `localStorage` key `dsh-chat-search:history` (per browser,
   capped at 20 entries).
 
+## Documentation
+
+Maintainer docs live in [docs/](docs/README.md):
+[spec-workflow.md](docs/spec-workflow.md) explains the Spec-to-Delivery process,
+[spec/](docs/spec/README.md) indexes requirements, and
+[reference/](docs/reference/) / [decisions/](docs/decisions/) hold durable facts
+and ADRs.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).

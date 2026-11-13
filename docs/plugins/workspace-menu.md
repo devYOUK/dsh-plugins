@@ -1,6 +1,6 @@
 # workspace-menu 实现说明
 
-面向维护者；用户文档见根目录 README，行为规格见 [`../specs/0004-workspace-context-menu/spec.md`](../specs/0004-workspace-context-menu/spec.md)。
+面向维护者；用户文档见根目录 README，行为规格见 [`../spec/spec-0004-workspace-menu/README.md`](../spec/spec-0004-workspace-menu/README.md)。
 
 ## 插槽与触发
 

@@ -1,6 +1,6 @@
 # chat-search 实现说明
 
-面向维护者；用户文档见根目录 README。行为规格见 [`../specs/0001-chat-search/spec.md`](../specs/0001-chat-search/spec.md) 与 [`../specs/0002-chat-search-process-expand/spec.md`](../specs/0002-chat-search-process-expand/spec.md)。
+面向维护者；用户文档见根目录 README。行为规格见 [`../spec/spec-0001-chat-search/README.md`](../spec/spec-0001-chat-search/README.md) 与 [`../spec/spec-0002-process-search/README.md`](../spec/spec-0002-process-search/README.md)。
 
 ## 搜索范围与 DOM 契约
 

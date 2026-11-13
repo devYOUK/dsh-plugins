@@ -4,8 +4,7 @@
   "type": "module",
   "scripts": {
     "check": "node scripts/check.mjs",
-    "spec:check": "node scripts/spec-check.mjs",
-    "spec:index": "node scripts/spec-check.mjs --index",
-    "spec:new": "node scripts/spec-new.mjs"
+    "docs:check": "python .agents/skills/spec-to-delivery/scripts/check_docs.py --root . --check-links",
+    "docs:index": "python .agents/skills/spec-to-delivery/scripts/gen_spec_index.py --root ."
   }
 }

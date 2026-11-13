@@ -99,6 +99,10 @@ dsh plugin --profile desktop remove @local/dsh-workspace-menu
 - 配置：上面的 profile patch，`- id: chat-search` 段。
 - 搜索历史：`localStorage` 的 `dsh-chat-search:history`（按浏览器，最多 20 条）。
 
+## 文档
+
+维护者文档在 [docs/](docs/README.md)：[spec-workflow.md](docs/spec-workflow.md) 说明 Spec-to-Delivery 流程，[spec/](docs/spec/README.md) 是需求索引，[reference/](docs/reference/) 与 [decisions/](docs/decisions/) 存放稳定事实与 ADR。
+
 ## License
 
 MIT，见 [LICENSE](LICENSE)。
