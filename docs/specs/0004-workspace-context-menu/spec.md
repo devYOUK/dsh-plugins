@@ -44,13 +44,13 @@ packages: [packages/workspace-menu]
 | 7 | 在非工作区行上右键不弹菜单，也不阻止默认行为 | 浏览器原生右键菜单照常 |
 | 8 | 点击「添加收藏」后该工作区名称变成主题蓝，菜单再打开显示「取消收藏」 | 文字变蓝；菜单项文案切换 |
 | 9 | 点击「取消收藏」后名称恢复主题色 | 文字回到默认颜色 |
-| 10 | 刷新页面或重开 DSH 后收藏状态仍在 | 名称仍是蓝色 |
+| 10 | 刷新页面后收藏状态仍在 | 名称仍是蓝色 |
 
 ## 影响面与风险
 
 - Client：注册 `shell.overlay` 的一个条目（`id: workspace-menu`），自绘菜单与重命名对话框。
 - 依赖宿主 DOM 契约：工作区行的 `data-row-key="workspace:<workspaceId>"`。宿主改版导致失配时，插件不拦截右键，功能静默失效而不是误伤其他区域。
-- 收藏：存在 `localStorage` 的 `dsh-workspace-menu:favorites`（工作区 id 数组）；通过给行元素加 `data-workspace-favorite="true"`，再用注入的 CSS `[data-workspace-favorite="true"] [class*="title"]{color: var(--dsw-alias-state-business-primary)}` 把名称染成主题蓝。MutationObserver 监听侧栏，在行重建后重新打标。
+- 收藏：存在 `localStorage` 的 `dsh-workspace-menu:favorites`（工作区 id 数组），按浏览器来源隔离；通过给行元素加 `data-workspace-favorite="true"`，再用注入的 CSS `[data-workspace-favorite="true"] [class*="title"]{color: var(--dsw-alias-state-business-primary)}` 把名称染成主题蓝。MutationObserver 监听侧栏，在行重建后重新打标。
 - 依赖服务：`ctx.workspaces.rename(workspaceId, title)`；`ctx.remote.session.openWorkspacePath({ path })`（返回 `{ ok }` 信封，失败可能是 `ok: false` 或抛错）。
 - 风险：右键监听是文档级事件，需要只对工作区行 `preventDefault`；菜单层级要高于侧栏但低于模态对话框。收藏染色依赖标题元素的 class 含 `title`，宿主的 CSS Modules 命名策略改变时颜色会失效（收藏数据仍在）。回滚方式是关闭插件行或卸载 bundle；收藏数据留在浏览器 localStorage。
 - 打开目录要求 Host 能把路径映射到本机；远程/容器部署会被拒绝，按失败提示处理。
