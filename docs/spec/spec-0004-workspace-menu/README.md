@@ -8,7 +8,7 @@ status: released
 release: 0.1.0
 owner: "@sutpc"
 created: 2026-11-02
-updated: 2026-11-13
+updated: 2026-11-16
 ---
 
 # spec-0004 · 工作区右键菜单

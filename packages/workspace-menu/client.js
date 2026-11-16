@@ -199,6 +199,7 @@ window.__ModuleLoader__.load({
       const [rename, setRename] = useState(null);
       const [toast, setToast] = useState(null);
       const [favorites, setFavorites] = useState(loadFavorites);
+      const renameOpen = rename !== null;
       const menuRef = useRef(null);
       const inputRef = useRef(null);
 
@@ -248,7 +249,7 @@ window.__ModuleLoader__.load({
       }, [menu]);
 
       useEffect(() => {
-        if (rename === null) return undefined;
+        if (!renameOpen) return undefined;
         const onKeyDown = (event) => {
           if (event.key === 'Escape') setRename(null);
         };
@@ -258,7 +259,7 @@ window.__ModuleLoader__.load({
           inputRef.current.select();
         }
         return () => document.removeEventListener('keydown', onKeyDown, true);
-      }, [rename]);
+      }, [renameOpen]);
 
       useEffect(() => {
         if (toast === null) return undefined;

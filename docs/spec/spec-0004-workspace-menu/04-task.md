@@ -14,5 +14,6 @@ updated: 2026-11-13
 - [x] 收藏/取消收藏菜单项与 localStorage 持久化
 - [x] 收藏后名称染主题蓝并加粗，行重建后重新打标
 - [x] 安装 bundle 并确认 slot 注册 active
+- [x] 修复重命名输入框每次输入都被全选覆盖（focus/select 只在打开时执行）
 - [x] README、实现说明与看板更新
 - [x] `npm run check` 与文档检查通过
